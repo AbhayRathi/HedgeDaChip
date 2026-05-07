@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verilator-cocotb:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apu-prototype
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Verilator
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y verilator
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r tb/requirements.txt
+      - name: Lint RTL
+        run: |
+          verilator --lint-only --sv -Wno-MULTITOP \
+            rtl/pkg/apu_params.sv rtl/pkg/apu_types.sv rtl/ifc/vr_if.sv rtl/ifc/mmio_if.sv \
+            rtl/util/fifo.sv rtl/util/timestamp.sv rtl/util/perf_counters.sv \
+            rtl/ingress/stream_rx.sv rtl/ingress/parser.sv rtl/ingress/eth_rx_stub.sv \
+            rtl/state/ob_mem.sv rtl/state/pim_prims.sv rtl/state/ob_engine.sv \
+            rtl/deterministic/decision_pipe.sv rtl/risk/risk_engine.sv rtl/egress/order_encoder.sv rtl/apu_top.sv
+      - name: Run cocotb tests
+        run: ./sim/cocotb/run.sh
