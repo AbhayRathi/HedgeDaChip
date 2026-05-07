@@ -1,9 +1,11 @@
+/* verilator lint_off UNUSEDPARAM */
 interface vr_if #(
   parameter int W = 128,
   parameter int U = 1,
   parameter bit HAS_LAST = 0,
   parameter bit HAS_USER = 0
 );
+  /* verilator lint_off UNUSEDSIGNAL */
   logic valid;
   logic ready;
   logic [W-1:0] data;
@@ -25,4 +27,22 @@ interface vr_if #(
     input user,
     output ready
   );
+
+  modport master (
+    output valid,
+    output data,
+    output last,
+    output user,
+    input ready
+  );
+
+  modport slave (
+    input valid,
+    input data,
+    input last,
+    input user,
+    output ready
+  );
+  /* verilator lint_on UNUSEDSIGNAL */
 endinterface
+/* verilator lint_on UNUSEDPARAM */

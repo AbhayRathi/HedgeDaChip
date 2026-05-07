@@ -1,0 +1,13 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+  - repo: local
+    hooks:
+      - id: sv-lint
+        name: Verilator lint
+        entry: bash -lc 'shopt -s globstar nullglob; cd apu-prototype && verilator --lint-only --Wall rtl/**/*.sv'
+        language: system
+        files: \.sv$

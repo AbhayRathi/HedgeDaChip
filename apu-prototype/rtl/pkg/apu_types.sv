@@ -1,4 +1,5 @@
 package apu_types;
+  import apu_params::*;
   typedef enum logic [7:0] {
     EVENT_NOP    = 8'd0,
     EVENT_ADD    = 8'd1,
@@ -15,30 +16,32 @@ package apu_types;
   } action_type_e;
 
   typedef struct packed {
-    logic [22:0] flags;
-    logic [31:0] ts;
-    logic [31:0] qty;
-    logic signed [31:0] price;
+    logic [EVENT_FLAGS_W-1:0] flags;
+    logic [TS_W-1:0] ts;
+    logic [QTY_W-1:0] qty;
+    logic signed [PRICE_W-1:0] price;
     logic side;
     logic [7:0] event_type;
   } event_t;
 
   typedef struct packed {
-    logic [31:0] last_trade_qty;
-    logic signed [31:0] last_trade_price;
-    logic signed [31:0] imbalance;
-    logic signed [31:0] spread;
-    logic [31:0] best_ask_qty;
-    logic signed [31:0] best_ask_price;
-    logic [31:0] best_bid_qty;
-    logic signed [31:0] best_bid_price;
+    logic [TS_W-1:0] event_ts;
+    logic [QTY_W-1:0] last_trade_qty;
+    logic signed [PRICE_W-1:0] last_trade_price;
+    logic signed [PRICE_W-1:0] imbalance;
+    logic signed [PRICE_W-1:0] spread;
+    logic [QTY_W-1:0] best_ask_qty;
+    logic signed [PRICE_W-1:0] best_ask_price;
+    logic [QTY_W-1:0] best_bid_qty;
+    logic signed [PRICE_W-1:0] best_bid_price;
   } feature_t;
 
   typedef struct packed {
-    logic [47:0] reserved;
+    logic [15:0] reserved;
+    logic [TS_W-1:0] timestamp;
     logic [7:0] reason_code;
-    logic [31:0] qty;
-    logic signed [31:0] price;
+    logic [QTY_W-1:0] qty;
+    logic signed [PRICE_W-1:0] price;
     logic [7:0] action_type;
   } action_t;
 endpackage
