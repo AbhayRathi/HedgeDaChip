@@ -41,12 +41,12 @@ module ob_engine (
     unique case (in_event.event_type)
       EVENT_ADD, EVENT_UPDATE: begin
         if (!in_event.side) begin
-          if ((best_bid_qty_r == 32'd0) || (in_event.price > best_bid_price_r) || (in_event.price == best_bid_price_r)) begin
+          if ((best_bid_qty_r == 32'd0) || (in_event.price >= best_bid_price_r)) begin
             best_bid_price_n = in_event.price;
             best_bid_qty_n = in_event.qty;
           end
         end else begin
-          if ((best_ask_qty_r == 32'd0) || (in_event.price < best_ask_price_r) || (in_event.price == best_ask_price_r)) begin
+          if ((best_ask_qty_r == 32'd0) || (in_event.price <= best_ask_price_r)) begin
             best_ask_price_n = in_event.price;
             best_ask_qty_n = in_event.qty;
           end

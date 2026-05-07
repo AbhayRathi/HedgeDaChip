@@ -166,7 +166,8 @@ class OrderBookModel:
             if event.event_type == EVENT_TRADE:
                 self.last_trade_price = event.price
                 self.last_trade_qty = event.qty
-        spread = self.best_ask_price - self.best_bid_price if self.best_bid_qty and self.best_ask_qty and self.best_ask_price >= self.best_bid_price else 0
+        has_valid_spread = self.best_bid_qty and self.best_ask_qty and self.best_ask_price >= self.best_bid_price
+        spread = self.best_ask_price - self.best_bid_price if has_valid_spread else 0
         imbalance = self.best_bid_qty - self.best_ask_qty
         return Feature(
             best_bid_price=self.best_bid_price,
