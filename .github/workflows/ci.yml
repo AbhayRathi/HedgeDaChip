@@ -1,0 +1,48 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verilator-cocotb:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Verilator and build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make verilator
+      - name: Install Python dependencies
+        working-directory: apu-prototype
+        run: python -m pip install --upgrade pip && python -m pip install -r tb/requirements.txt
+      - name: Run Verilator lint and smoke build
+        working-directory: apu-prototype
+        run: ./sim/verilator/run.sh
+      - name: Run cocotb tests
+        working-directory: apu-prototype
+        run: ./sim/cocotb/run.sh
+      - name: Check cocotb coverage
+        working-directory: apu-prototype
+        run: |
+          pytest --cov=sw_golden --cov-report=term-missing --cov-fail-under=80 tb/
+      - name: Check docs are not stubs
+        working-directory: apu-prototype
+        run: |
+          for f in docs/*.md; do
+            lines=$(wc -l < "$f")
+            if [ "$lines" -lt 30 ]; then
+              echo "WARN: $f is only $lines lines — likely a stub"
+            fi
+          done
+      - name: Upload sim artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sim-waves
+          path: apu-prototype/sim/**/*.vcd

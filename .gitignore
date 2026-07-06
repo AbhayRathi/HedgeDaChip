@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+venv/
+.env
+apu-prototype/sim_build/
+apu-prototype/sim/cocotb/build/
+apu-prototype/sim/verilator/build/
+apu-prototype/.cocotb-results.xml
+obj_dir/
+*.vcd
+*.fst
